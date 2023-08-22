@@ -5,6 +5,12 @@
 #define MAX_PATH_LENGTH 100
 extern char **environ;
 
+#include <signal.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <stdarg.h>
+#include <dirent.h>
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
@@ -27,6 +33,22 @@ size_t tokens_count(char *tokens);
 char *strtok_(char *srcString, char *delim);
 size_t strlen_(const char* str);
 unsigned int is_delim(char c, char *delim);
+void pstring(char *s, int nline);
+int _putchar(char c);
+int _strcmp_(char *s1, char *s2);
+int _strlent(char *s);
+char **_tok_(int toks, char *s, const char *delim);
+void cd_function(char *input);
+char *find_dir(char **path_arr, char *command);
+char **tok_link(char *line, const char *delim, int toks);
+int tok_count(char *line, const char *delim);
+void _free_(char **doublepointer);
+void _free(int num, ...);
+char **_pathtok(int i, char *s);
+int _paths(char *var);
+char *set_path(char *command);
+char *comb_path(char *dir, char *command);
+int env_index(char *var);
 /* ENV */
 char *_getenv(const char *name);
 void print_path_directories(void);
