@@ -15,10 +15,12 @@ int check_status(char *path, struct stat *buf)
 
 ssize_t getline_(char **lineptr, size_t *n, FILE *stream)
 {
+
 	static char buffer[BUFFER_SIZE];
-	static size_t buffer_pos, buffer_size;
-	ssize_t line_length = 0;
-	int end_of_file = 0;
+	/*static size_t buffer_pos;*/
+	size_t line_length = 0;
+	char c, *new_lineptr;
+	int end_of_file = 0, buffer_size = 0, buffer_pos = 0;
 
 	if (*n == 0 || *lineptr == NULL)
 	{
@@ -41,12 +43,12 @@ ssize_t getline_(char **lineptr, size_t *n, FILE *stream)
 		}
 		if (buffer_size == -1)
 			return (-1);
-		char c = buffer[buffer_pos++];
+		c = buffer[buffer_pos++];
 
 		if (line_length + 1 >= *n)
 		{
 			*n *= 2;
-			char *new_lineptr = realloc(*lineptr, *n);
+			new_lineptr = realloc(*lineptr, *n);
 
 			if (!new_lineptr)
 				return (-1);
@@ -70,9 +72,12 @@ ssize_t getline_(char **lineptr, size_t *n, FILE *stream)
 }
 
 
-char *find_command(const char *command, char **env)
+char *find_command(const char *command)
 {
-	char *path = _getenv("PATH");
+	struct stat buf;
+	char *path = _getenv("PATH"), *full_path = NULL;
+	char *dir = strtok_(path, ":");
+	size_t full_path_length;
 
 	if (path == NULL)
 	{
@@ -80,12 +85,10 @@ char *find_command(const char *command, char **env)
 	}
 
 	path = strdup_(path);
-	char *dir = strtok_(path, ":");
-	char *full_path = NULL;
 
 	while (dir != NULL)
 	{
-		size_t full_path_length = strlen_(dir) + strlen_(command) + 2;
+		full_path_length = strlen_(dir) + strlen_(command) + 2;
 
 		full_path = (char *)malloc(full_path_length);
 
@@ -96,8 +99,6 @@ char *find_command(const char *command, char **env)
 		}
 
 		snprintf(full_path, full_path_length, "%s/%s", dir, command);
-
-		struct stat buf;
 
 		if (check_status(full_path, &buf) == 0)
 		{
@@ -126,7 +127,7 @@ int execute_(char *command, char **argv, char **env)
 	}
 	else
 	{
-		char *full_command = find_command(command, env);
+		char *full_command = find_command(command);
 
 		if (full_command == NULL)
 		{
