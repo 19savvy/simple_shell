@@ -35,17 +35,18 @@ int _setenv(const char *name, const char *value, int overwrite)
 {
 	size_t name_len = strlen_(name);
 	size_t value_len = strlen_(value);
-	char *old_value = _getenv(name);
+	char *old_value = _getenv(name), *new_env, **new_environ;
+	int environ_size, i, j;
 
 	if (!name || !value || (old_value && !overwrite))
 		return (-1);
-	char *new_env = malloc(name_len + value_len + 2);
+	new_env = malloc(name_len + value_len + 2);
 
 	if (!new_env)
 		return (-1);
 	snprintf(new_env, name_len + value_len + 2, "%s=%s", name, value);
 
-	for (int i = 0; environ[i]; i++)
+	for (i = 0; environ[i]; i++)
 	{
 		if (strncmp(environ[i], name, name_len) == 0 && environ[i][name_len] == '=')
 		{
@@ -54,19 +55,19 @@ int _setenv(const char *name, const char *value, int overwrite)
 			return (0);
 		}
 	}
-	int environ_size = 0;
+	environ_size = 0;
 
 	while (environ[environ_size])
 		environ_size++;
-	char **new_environ = malloc((environ_size + 2) * sizeof(char *));
+	new_environ = malloc((environ_size + 2) * sizeof(char *));
 
 	if (!new_environ)
 	{
 		free(new_env);
 		return (-1);
 	}
-	for (int i = 0; i < environ_size; i++)
-		new_environ[i] = environ[i];
+	for (j = 0; j < environ_size; j++)
+		new_environ[j] = environ[j];
 	new_environ[environ_size] = new_env;
 	new_environ[environ_size + 1] = NULL;
 
@@ -104,7 +105,7 @@ void print_path_directories(void)
  */
 PathNode *build_path_list(void)
 {
-	char *path = _getenv("PATH");
+	char *path = _getenv("PATH"), *token;
 	PathNode *head = NULL;
 	PathNode *current = NULL;
 
@@ -114,7 +115,7 @@ PathNode *build_path_list(void)
 		return (NULL);
 	}
 
-	char *token = strtok_(path, ":");
+	token = strtok_(path, ":");
 
 	while (token != NULL)
 	{

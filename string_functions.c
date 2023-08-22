@@ -7,13 +7,16 @@
  */
 char *strdup_(const char *str)
 {
+	size_t len;
+	char *copy;
+
 	if (str == NULL)
 	{
 		return (NULL);
 	}
 
-	size_t len = strlen(str);
-	char *copy = (char *)malloc(len + 1);
+	len = strlen(str);
+	copy = (char *)malloc(len + 1);
 
 	if (copy != NULL)
 	{

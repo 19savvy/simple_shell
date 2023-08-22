@@ -23,7 +23,7 @@ char **str_tok(char *str, char *delim, int *count);
 int check_status(char *path, struct stat *buf);
 int execute_(char *command, char **argv, char **env);
 void handle_pid_error(pid_t pid);
-char *find_command(const char *command, char **env);
+char *find_command(const char *command);
 char *strdup_(const char *str);
 char *strchr_(char *str, char c);
 void exit_command(int status);
