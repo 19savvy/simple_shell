@@ -19,6 +19,19 @@ extern char **environ;
 #include <sys/wait.h>
 #include <sys/stat.h>
 #include <string.h>
+
+/**
+ * struct in_builts - defining the inbuilt functions
+ * @built: name of the command built in
+ * @f: pointer to the inbuilt function to call
+ */
+
+typedef struct in_builts
+{
+		char *built;
+		void (*f)(char *);
+} in_builts_t;
+
 char **str_tok(char *str, char *delim, int *count);
 int check_status(char *path, struct stat *buf);
 int execute_(char *command, char **argv, char **env);
@@ -49,6 +62,10 @@ int _paths(char *var);
 char *set_path(char *command);
 char *comb_path(char *dir, char *command);
 int env_index(char *var);
+void env_function(char *s);
+void (*function_check(char *s))(char *s);
+int inbuilt_functions(char **arguments, char *s);
+void exit_function(char *s);
 /* ENV */
 char *_getenv(const char *name);
 void print_path_directories(void);
