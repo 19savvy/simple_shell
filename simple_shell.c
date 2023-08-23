@@ -2,12 +2,12 @@
 /**
  * main - the main function for the simple shell program
  * @argc: number of arguments passed
- * @argv: the arguments passed
+ * @av: the arguments passed
  * @env: the environment variable
  * Return: always 0
  */
 
-int main(int argc, char **argv, char **env)
+int main(int argc, char **av, char **env)
 {
 	size_t bufferSize = 0;
 	ssize_t bytesRead;
@@ -27,7 +27,6 @@ int main(int argc, char **argv, char **env)
 		}
 		if (input[bytesRead - 1] == '\n')
 			input[bytesRead - 1] = '\0';
-		/*char *args[MAX_ARGS];*/
 
 		argc = 0;
 
@@ -38,7 +37,7 @@ int main(int argc, char **argv, char **env)
 			token = strtok_(NULL, " ;\n");
 		}
 		args[argc] = NULL;
-		if (argc > 0 && ((strcmp(args[0], "exit") == 0) || strcmp(*argv, "exit") == 0))
+		if (argc > 0 && ((strcmp(args[0], "exit") == 0) || strcmp(*av, "exit") == 0))
 		{
 			int exit_status = (argc > 1) ? atoi(args[1]) : 0;
 
@@ -50,6 +49,6 @@ int main(int argc, char **argv, char **env)
 	}
 	free(input);
 	return (0);
-} 
+}
 
 
