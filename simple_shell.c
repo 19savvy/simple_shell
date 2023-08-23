@@ -50,5 +50,3 @@ int main(int argc, char **av, char **env)
 	free(input);
 	return (0);
 }
-
-

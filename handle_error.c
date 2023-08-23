@@ -1,4 +1,5 @@
 #include "shell.h"
+#define BUFFER_SIZE 64
 /**
  * handle_pid_error - handle errors relating
  * to process ID

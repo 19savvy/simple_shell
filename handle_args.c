@@ -17,7 +17,6 @@ ssize_t getline_(char **lineptr, size_t *n, FILE *stream)
 {
 
 	static char buffer[BUFFER_SIZE];
-	/*static size_t buffer_pos;*/
 	size_t line_length = 0;
 	char c, *new_lineptr;
 	int end_of_file = 0, buffer_size = 0, buffer_pos = 0;
@@ -54,7 +53,6 @@ ssize_t getline_(char **lineptr, size_t *n, FILE *stream)
 				return (-1);
 			*lineptr = new_lineptr;
 		}
-
 		(*lineptr)[line_length++] = c;
 
 		if (c == '\n')
