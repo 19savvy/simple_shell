@@ -8,7 +8,6 @@
 
 void exit_command(int status)
 {
-	printf("Exiting the shell...\n");
 	exit(status);
 }
 

@@ -69,48 +69,49 @@ ssize_t getline_(char **lineptr, size_t *n, FILE *stream)
 		return (0);
 }
 
-
 char *find_command(const char *command)
 {
+    char *path = _getenv("PATH"), *path_copy, *dir, *full_path;
 	struct stat buf;
-	char *path = _getenv("PATH"), *full_path = NULL;
-	char *dir = strtok_(path, ":");
-	size_t full_path_length;
+    if (path == NULL) {
+        return NULL;
+    }
 
-	if (path == NULL)
+    path_copy = strdup(path);
+    if (path_copy == NULL) {
+        perror("Memory allocation error");
+        exit(1);
+    }
+
+    dir = strtok(path_copy, ":");
+    full_path = NULL;
+
+    while (dir != NULL)
 	{
-		return (NULL);
-	}
+        size_t full_path_length = strlen(dir) + strlen(command) + 2;
+        full_path = (char *)malloc(full_path_length);
 
-	path = strdup_(path);
+        if (full_path == NULL) {
+            perror("Memory allocation error");
+            exit(1);
+        }
 
-	while (dir != NULL)
-	{
-		full_path_length = strlen_(dir) + strlen_(command) + 2;
+        snprintf(full_path, full_path_length, "%s/%s", dir, command);
 
-		full_path = (char *)malloc(full_path_length);
-
-		if (full_path == NULL)
+        if (check_status(full_path, &buf) == 0)
 		{
-			perror("Memory allocation error");
-			exit(1);
-		}
+            free(path_copy);
+            return full_path;
+        }
 
-		snprintf(full_path, full_path_length, "%s/%s", dir, command);
+        free(full_path);
+        dir = strtok(NULL, ":");
+    }
 
-		if (check_status(full_path, &buf) == 0)
-		{
-			free(path);
-			return (full_path);
-		}
-
-		free(full_path);
-		dir = strtok_(NULL, ":");
-	}
-
-	free(path);
-	return (NULL);
+    free(path_copy);
+    return (NULL);
 }
+
 
 int execute_(char *command, char **argv, char **env)
 {
