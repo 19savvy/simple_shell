@@ -44,20 +44,39 @@ unsigned int is_delim(char c, char *delim)
 void execute_shell_command(char *command, char **argv, char **env)
 {
 	pid_t pid;
-	int status;
+    int status, i;
 
-	pid = fork();
-	handle_pid_error(pid);
+    if (command[0] == '#') {
+        int print_previous = 0;
+        for (i = 1; argv[i] != NULL; i++) {
+            if (print_previous) {
+                write(STDOUT_FILENO, argv[i], strlen(argv[i]));
+                write(STDOUT_FILENO, " ", 1);
+            }
+            if (strcmp(argv[i], "#") == 0) {
+                print_previous = 1;
+            }
+        }
+        write(STDOUT_FILENO, "\n", 1);
+        return;
+    }
 
-	if (pid == 0)
-	{
-		execute_(command, argv, env);
-		exit(0);
-	}
 
-	if (wait(&status) == -1)
-	{
-		perror("Error!");
-		exit(1);
-	}
+    pid = fork();
+    if (pid == -1) {
+        perror("Fork failed");
+        exit(1);
+    }
+
+    if (pid == 0) {
+        if (execute_(command, argv, env) == -1)
+		{
+			exit(127);
+		}
+        exit(0);
+    }
+
+    if (wait(&status) == -1) {
+        exit(1);
+    }
 }

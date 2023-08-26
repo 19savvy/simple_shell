@@ -115,13 +115,11 @@ char *find_command(const char *command)
 
 int execute_(char *command, char **argv, char **env)
 {
-	/* Check if the provided command already contains a slash '/'*/
 	if (strchr(command, '/') != NULL)
 	{
 		if (execve(command, argv, env) == -1)
 		{
-			perror("Error!");
-			exit(1);
+			exit(127);
 		}
 	}
 	else
@@ -130,14 +128,15 @@ int execute_(char *command, char **argv, char **env)
 
 		if (full_command == NULL)
 		{
-			printf("Command not found: %s\n", command);
-			exit(1);
+			write(STDERR_FILENO, "./hsh: 1: ", 10);
+            write(STDERR_FILENO, argv[0], strlen(argv[0]));
+            write(STDERR_FILENO, ": not found\n", 12);
+			exit(127);
 		}
 
 		if (execve(full_command, argv, env) == -1)
 		{
-			perror("Error!");
-			exit(1);
+			exit(127);
 		}
 	}
 
