@@ -119,7 +119,7 @@ int execute_(char *command, char **argv, char **env)
 	{
 		if (execve(command, argv, env) == -1)
 		{
-			exit(127);
+			return(-1);
 		}
 	}
 	else
@@ -136,7 +136,7 @@ int execute_(char *command, char **argv, char **env)
 
 		if (execve(full_command, argv, env) == -1)
 		{
-			exit(127);
+			return (-1);
 		}
 	}
 
